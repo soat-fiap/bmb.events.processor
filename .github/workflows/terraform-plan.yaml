@@ -7,7 +7,7 @@ env:
   TF_CLOUD_ORGANIZATION: "${{ vars.BMB_TF_ORGANIZATION }}"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
-  CONFIG_DIRECTORY: "./tf"
+  CONFIG_DIRECTORY: "./terraform"
 
 jobs:
 
@@ -24,7 +24,7 @@ jobs:
 
       - name: Create .auto.tfvars file
         run: |
-          cat <<EOF > tf/api.auto.tfvars
+          cat <<EOF > terraform/cronjob.auto.tfvars
           neo4j_uri = "${{ vars.NEO4J_URI }}"
           neo4j_user ="${{ vars.NEO4J_USER }}"
           neo4j_password = "${{ vars.NEO4J_PASSWORD }}"
