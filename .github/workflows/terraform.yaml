@@ -18,6 +18,7 @@ env:
 jobs:
 
   test-python:
+    name: Python unit tests
     runs-on: ubuntu-latest
 
     steps:
@@ -40,6 +41,7 @@ jobs:
           python -m unittest discover -s tests
     
   build-docker-image:
+    name: Build and push Docker image
     # if: github.ref == 'refs/heads/main'
     needs: [test-python]
     runs-on: ubuntu-latest
@@ -94,7 +96,7 @@ jobs:
   create-cron-job:
     if: github.ref == 'refs/heads/main'
     needs: [build-docker-image]
-    name: "Terraform Apply"
+    name: Create Cron Job
     runs-on: ubuntu-latest
     environment: dev
     permissions:
