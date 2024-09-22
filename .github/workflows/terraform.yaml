@@ -118,7 +118,6 @@ jobs:
           secret_access_key = "${{ secrets.AWS_CRONJOB_SECRET_ACCESS_KEY }}"
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
           EOF
-          echo  ${{ env.CONFIG_DIRECTORY }}
 
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.1
