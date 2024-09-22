@@ -18,7 +18,7 @@ variable "neo4j_password" {
 }
 
 variable "docker_image" {
-  default     = "bmb-events-processor:latest"
+  default     = "ghcr.io/soat-fiap/bmb.events.processor:sha-fa41bdb-"
   description = "Docker image"
   type        = string
 }
@@ -46,11 +46,11 @@ variable "region" {
 variable "eks_cluster_name" {
   description = "The name of the EKS cluster"
   type        = string
-  default     = "quixada"
+  default     = "eks_dev_quixada-local"
 }
 
 variable "queue_name" {
-  default = "boletimfocus"
+  default = "bmb-events-local"
   type    = string
   description = "BMB events queue name"
 }

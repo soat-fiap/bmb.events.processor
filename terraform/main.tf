@@ -41,33 +41,62 @@ resource "kubernetes_secret" "bmb_event_processor_neo4j" {
   }
 }
 
-resource "kubernetes_cron_job" "bmb_event_processor_neo4j" {
-  metadata {
-    name = "bmb-event-processor-neo4j"
-  }
-  spec {
-    schedule = "*/1 * * * *"
-    job_template {
-      metadata {}
-      spec {
-        template {
-          metadata {}
-          spec {
-            container {
-              name              = "bmb-event-processor"
-              image             = local.image_name
-              image_pull_policy = "IfNotPresent"
-              env_from {
-                secret_ref {
-                  name = kubernetes_secret.bmb_event_processor_neo4j.metadata[0].name
+
+resource "kubernetes_manifest" "bmb_event_processor_neo4j_cronjob" {
+  manifest = {
+    apiVersion = "batch/v1"
+    kind       = "CronJob"
+    metadata = {
+      name      = "bmb-event-processor-neo4j"
+      namespace = "default"
+    }
+    spec = {
+      schedule = "*/5 * * * *"
+      jobTemplate = {
+        spec = {
+          template = {
+            spec = {
+              containers = [
+                {
+                  name  = "bmb-event-processor"
+                  image = local.image_name
+                  env = [
+                    {
+                      name  = "QUEUE_URL"
+                      value = local.queue_url
+                    },
+                    {
+                      name = "NEO4J_URI"
+                      valueFrom = {
+                        secretKeyRef = {
+                          name = kubernetes_secret.bmb_event_processor_neo4j.metadata[0].name
+                          key  = "NEO4J_URI"
+                        }
+                      }
+                    },
+                    {
+                      name = "NEO4J_USER"
+                      valueFrom = {
+                        secretKeyRef = {
+                          name = kubernetes_secret.bmb_event_processor_neo4j.metadata[0].name
+                          key  = "NEO4J_USER"
+                        }
+                      }
+                    },
+                    {
+                      name = "NEO4J_PASSWORD"
+                      valueFrom = {
+                        secretKeyRef = {
+                          name = kubernetes_secret.bmb_event_processor_neo4j.metadata[0].name
+                          key  = "NEO4J_PASSWORD"
+                        }
+                      }
+                    }
+                  ]
                 }
-              }
-              env {
-                name  = "QUEUE_URL"
-                value = local.queue_url
-              }
+              ]
+              restartPolicy = "OnFailure"
             }
-            restart_policy = "OnFailure"
           }
         }
       }
