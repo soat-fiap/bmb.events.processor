@@ -42,7 +42,7 @@ jobs:
     
   build-docker-image:
     name: Build and push Docker image
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs: [test-python]
     runs-on: ubuntu-latest
     permissions:
@@ -94,7 +94,6 @@ jobs:
           cache-to: type=gha,mode=
 
   create-cron-job:
-    if: github.ref == 'refs/heads/main'
     needs: [build-docker-image]
     name: Create Cron Job
     runs-on: ubuntu-latest
