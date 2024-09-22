@@ -51,7 +51,7 @@ resource "kubernetes_manifest" "bmb_event_processor_neo4j_cronjob" {
       namespace = "default"
     }
     spec = {
-      schedule = "*/5 * * * *"
+      schedule = "*/3 * * * *"
       jobTemplate = {
         spec = {
           template = {

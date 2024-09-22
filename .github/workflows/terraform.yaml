@@ -133,6 +133,7 @@ jobs:
           access_key_id = "${{ secrets.AWS_CRONJOB_ACCESS_KEY_ID }}"
           secret_access_key = "${{ secrets.AWS_CRONJOB_SECRET_ACCESS_KEY }}"
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
+          docker_image = "${{ env.API_IMAGE_TAG }}"
           EOF
 
       - name: Upload Configuration
