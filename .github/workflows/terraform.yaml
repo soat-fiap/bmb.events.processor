@@ -2,7 +2,7 @@ name: Build and Test
 
 on:
   push:
-    # branches: [ main ]
+    branches: [ main ]
   pull_request:
     
 env:
@@ -39,10 +39,24 @@ jobs:
       - name: Run tests
         run: |
           python -m unittest discover -s tests
-    
+
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        
+          
   build-docker-image:
     name: Build and push Docker image
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs: [test-python]
     runs-on: ubuntu-latest
     permissions:
@@ -94,13 +108,15 @@ jobs:
           cache-to: type=gha,mode=
 
   create-cron-job:
-    if: github.ref == 'refs/heads/main'
     needs: [build-docker-image]
     name: Create Cron Job
     runs-on: ubuntu-latest
     environment: dev
     permissions:
       contents: read
+    outputs:
+      CONFIG_VERSION: ${{ steps.apply-upload.outputs.configuration_version_id }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -139,3 +155,19 @@ jobs:
         with:
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Confirmed from GitHub Actions CI ${{ github.sha }}"
+
+  destroy-plan:
+    name: "Create terraform destroy plan"
+    needs: [create-cron-job]
+    runs-on: ubuntu-latest
+      
+    steps:
+      - name: Create destroy plan
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.1
+        id: destroy-plan
+        continue-on-error: true
+        with:
+          workspace: ${{ vars.TF_WORKSPACE }}
+          configuration_version: ${{ needs.create-cron-job.outputs.CONFIG_VERSION }}  
+          message: "Create Destroy run from GitHub Actions CI ${{ github.sha }}"
+          is_destroy: true
