@@ -48,3 +48,9 @@ variable "eks_cluster_name" {
   type        = string
   default     = "quixada"
 }
+
+variable "queue_name" {
+  default = "boletimfocus"
+  type    = string
+  description = "BMB events queue name"
+}

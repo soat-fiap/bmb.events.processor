@@ -6,6 +6,14 @@ data "aws_eks_cluster" "techchallenge_cluster" {
   name = var.eks_cluster_name
 }
 
+##############################
+# SQS QUEUE
+##############################
+
+data "aws_sqs_queue" "queue" {
+  name = var.queue_name
+}
+
 locals {
   neo4j_uri             = base64encode(var.neo4j_uri)
   neo4j_user            = base64encode(var.neo4j_user)
@@ -13,6 +21,7 @@ locals {
   image_name            = var.docker_image
   aws_access_key_id     = base64encode(var.access_key_id)
   aws_secret_access_key = base64encode(var.secret_access_key)
+  queue_url             = data.aws_sqs_queue.queue.url
 }
 
 resource "kubernetes_secret" "bmb_event_processor_neo4j" {
@@ -52,6 +61,10 @@ resource "kubernetes_cron_job" "bmb_event_processor_neo4j" {
                 secret_ref {
                   name = kubernetes_secret.bmb_event_processor_neo4j.metadata[0].name
                 }
+              }
+              env {
+                name  = "QUEUE_URL"
+                value = local.queue_url
               }
             }
             restart_policy = "OnFailure"

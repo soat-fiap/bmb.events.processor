@@ -81,6 +81,7 @@ def exec_query(driver, func, *data):
 NEO4J_URI = os.getenv('NEO4J_URI', '-neo4j+s://5a219891.databases.neo4j.io')
 NEO4J_USER = os.getenv('NEO4J_USER', 'neo4j')
 NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD', 'bk3AI_CP8USMsqc_9uf4YcoDEu1Bv5_cktZlY2tNY4s')
+QUEUE_URL = os.getenv('QUEUE_URL')
 # AWS_API_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', 'neo4j')
 # AWS_API_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', 'bk3AI_CP8USMsqc_9uf4YcoDEu1Bv5_cktZlY2tNY4s')
 
@@ -113,17 +114,12 @@ print(f"Connecting to Neo4j at {NEO4J_URI} with user {NEO4J_USER} password {NEO4
 
 #     print("Nodes and relationships created")
 
-#     # Initialize SQS client
 sqs = boto3.client('sqs', region_name='us-east-1')
-
-#     # # URL of the SQS queue
-queue_url = 'https://sqs.us-east-1.amazonaws.com/0000/boletimfocus'
-
 def poll_sqs_messages():
     try:
         # Receive message from SQS queue
         response = sqs.receive_message(
-            QueueUrl=queue_url,
+            QueueUrl=QUEUE_URL,
             MaxNumberOfMessages=1,
             WaitTimeSeconds=10,
             MessageAttributeNames=['EventType']

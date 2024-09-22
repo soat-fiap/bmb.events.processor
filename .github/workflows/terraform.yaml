@@ -113,7 +113,7 @@ jobs:
           neo4j_uri = "${{ vars.NEO4J_URI }}"
           neo4j_user ="${{ vars.NEO4J_USER }}"
           neo4j_password = "${{ vars.NEO4J_PASSWORD }}"
-          sqs_queue_name = "${{ vars.SQS_QUEUE_NAME }}"
+          queue_name = "${{ vars.SQS_QUEUE_NAME }}"
           access_key_id = "${{ secrets.AWS_CRONJOB_ACCESS_KEY_ID }}"
           secret_access_key = "${{ secrets.AWS_CRONJOB_SECRET_ACCESS_KEY }}"
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
