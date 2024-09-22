@@ -1,6 +1,10 @@
 # Use the official Python image from the Docker Hub
 FROM python:3.9-slim
 
+# Create a non-root user and switch to that user
+RUN useradd -m cronjobuser
+USER cronjobuser
+
 # Set the working directory in the container
 WORKDIR /app
 
