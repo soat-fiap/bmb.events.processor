@@ -161,7 +161,6 @@ jobs:
     name: "Create terraform destroy plan"
     needs: [create-cron-job]
     runs-on: ubuntu-latest
-      
     steps:
       - name: Create destroy plan
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.1
