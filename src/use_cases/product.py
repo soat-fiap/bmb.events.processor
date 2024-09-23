@@ -14,9 +14,9 @@ class CreateProductNodeUseCase:
         print("creating product node")
     
         query = (
-            "MERGE (p:Product {id: $productId, name: $name, category: $category, price: $price}) "
+            "MERGE (p:Product {id: $product_id, name: $name, category: $category, price: $price}) "
         )
-        tx.run(query, productId=data["Id"], name=data["Name"], category=category_mapping[data["Category"]], price=data["Price"])
+        tx.run(query, product_id=data["Id"], name=data["Name"], category=category_mapping[data["Category"]], price=data["Price"])
         
         print("product node created")
         
