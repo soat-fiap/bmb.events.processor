@@ -5,12 +5,22 @@ category_mapping = {
     3: "Dessert",
 }
 
-def create_product_node(tx, data):
-    print("creating product node")
+class CreateProductNodeUseCase:
     
-    query = (
-        "MERGE (p:Product {id: $productId, name: $name, category: $category, price: $price}) "
-    )
-    tx.run(query, productId=data["Id"], name=data["Name"], category=category_mapping[data["Category"]], price=data["Price"])
+    def __init__(self, driver):
+        self.driver = driver
+
+    def create_product_node(self, tx, data):
+        print("creating product node")
     
-    print("product node created")
+        query = (
+            "MERGE (p:Product {id: $productId, name: $name, category: $category, price: $price}) "
+        )
+        tx.run(query, productId=data["Id"], name=data["Name"], category=category_mapping[data["Category"]], price=data["Price"])
+        
+        print("product node created")
+        
+    def execute(self, data):
+        with self.driver.session(database="neo4j") as session:
+            print("saving on neo4j")
+            session.execute_write(self.create_product_node, data)
