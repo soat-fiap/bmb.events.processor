@@ -1,4 +1,4 @@
-from relations_module import create_customer_order_relationship, create_order_items_relationship
+from use_cases.relations import create_customer_order_relationship, create_order_items_relationship
 
 class CreateOrderNodeUseCase:
     

@@ -1,4 +1,4 @@
-class SqsService:
+class IntegrationQueueGateway:
     
     def __init__(self, sqs_client, queue_url):
         self.sqs_client = sqs_client
@@ -21,11 +21,12 @@ class SqsService:
             print(f"Error polling SQS messages: {e}")
 
     def delete_message(self, message):
+        print(f"Deleting message: {message['MessageId']}")
         try:
             self.sqs_client.delete_message(
                 QueueUrl=self.queue_url,
                 ReceiptHandle=message['ReceiptHandle']
             )
-            print(f"Deleted message: {message['MessageId']}")
+            print(f"Message deleteed: {message['MessageId']}")
         except Exception as e:
             print(f"Error deleting message: {e}")
