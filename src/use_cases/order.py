@@ -5,7 +5,7 @@ class CreateOrderNodeUseCase:
     def __init__(self, driver):
         self.driver = driver
 
-    def create_order_node(self, tx, order_id):
+    def __create_node(self, tx, order_id):
         print(f'creating order node: {order_id}')
         query = (
             "MERGE (o:Order {id: $order_id}) "
@@ -18,7 +18,7 @@ class CreateOrderNodeUseCase:
         with self.driver.session(database="neo4j") as session:
             print("saving on neo4j")
             order_id = order_created["Id"]
-            session.execute_write(self.create_order_node, order_id)
+            session.execute_write(self.__create_node, order_id)
       
             if order_created["Customer"] is not None:
               session.execute_write(create_customer_order_relationship, order_created["Id"], order_created["Customer"]["Id"])

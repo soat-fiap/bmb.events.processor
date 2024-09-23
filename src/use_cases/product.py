@@ -10,7 +10,7 @@ class CreateProductNodeUseCase:
     def __init__(self, driver):
         self.driver = driver
 
-    def create_product_node(self, tx, data):
+    def __create_node(self, tx, data):
         print("creating product node")
     
         query = (
@@ -23,4 +23,4 @@ class CreateProductNodeUseCase:
     def execute(self, data):
         with self.driver.session(database="neo4j") as session:
             print("saving on neo4j")
-            session.execute_write(self.create_product_node, data)
+            session.execute_write(self.__create_node, data)
