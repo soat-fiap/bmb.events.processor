@@ -1,12 +1,12 @@
-def create_customer_order_relationship(tx, orderId, customerId):
+def create_customer_order_relationship(tx, orderId, customer_id):
     print("creating customer-order relationship")
     
     query = (
         "MERGE (o:Order {id: $orderId}) "
-        "MERGE (c:Customer {id: $customerId}) "
+        "MERGE (c:Customer {id: $customer_id}) "
         "MERGE (c)-[:PLACED]->(o)"
     )
-    tx.run(query, orderId=orderId, customerId=customerId)
+    tx.run(query, orderId=orderId, customer_id=customer_id)
     
     print("customer-order relationship created")
 
