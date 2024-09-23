@@ -15,12 +15,12 @@ data "aws_sqs_queue" "queue" {
 }
 
 locals {
-  neo4j_uri             = base64encode(var.neo4j_uri)
-  neo4j_user            = base64encode(var.neo4j_user)
-  neo4j_password        = base64encode(var.neo4j_password)
+  neo4j_uri             = var.neo4j_uri
+  neo4j_user            = var.neo4j_user
+  neo4j_password        = var.neo4j_password
   image_name            = var.docker_image
-  aws_access_key_id     = base64encode(var.access_key_id)
-  aws_secret_access_key = base64encode(var.secret_access_key)
+  aws_access_key_id     = var.access_key_id
+  aws_secret_access_key = var.secret_access_key
   queue_url             = data.aws_sqs_queue.queue.url
 }
 
