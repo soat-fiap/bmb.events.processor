@@ -1,4 +1,4 @@
-# bmb.events.processor
+# bmb.events.processor (demo)
 
 [![Build](https://github.com/soat-fiap/bmb.events.processor/actions/workflows/terraform.yaml/badge.svg)](https://github.com/soat-fiap/bmb.events.processor/actions/workflows/terraform.yaml)
 
