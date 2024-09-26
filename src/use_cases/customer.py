@@ -1,19 +1,13 @@
 class CreateCustomerNodeUseCase:
     
-    def __init__(self, driver):
-        self.driver = driver
+    def __init__(self, database, logger):
+        self.logger = logger
+        self.database = database
 
-    def __create_node(self, tx, data):
-        print("creating customer node")
-
-        query = (
-            "MERGE (c:Customer {id: $customer_id}) "
-        )
-        tx.run(query, customer_id=data["Id"])
-        
-        print("customer node created")
-        
     def execute(self, data):
-        with self.driver.session(database="neo4j") as session:
-            print("saving on neo4j")
-            session.execute_write(self.__create_node, data)
+        customer_id = data.get('Id')
+        customer_name = data.get('Name')
+        
+        self.logger.log(f"Starting creation of customer: ID = {customer_id}, Name = {customer_name}")
+        self.database.save_customer(data)
+        self.logger.log(f"Successfully created customer: ID = {customer_id}, Name = {customer_name}")
