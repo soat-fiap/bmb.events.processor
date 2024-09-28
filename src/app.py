@@ -1,3 +1,4 @@
+from custom_logger import Logger
 from controllers.events_controller import EventsController
 from use_cases.order import CreateOrderNodeUseCase
 from use_cases.customer import CreateCustomerNodeUseCase
@@ -66,30 +67,28 @@ json_order_created= """
 
 def main():
 
-  NEO4J_URI = os.getenv('NEO4J_URI', 'neo4j+s://db5c9cae.databases.neo4j.io')
-  NEO4J_USER = os.getenv('NEO4J_USER', 'neo4j')
-  NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD', 'qDRQaOBpQBHFZB8XjF3pdnudUaI7-a3oIoMye2-CYwE')
-  QUEUE_URL = os.getenv('QUEUE_URL', "https://sqs.us-east-1.amazonaws.com//boletimfocus")
+    NEO4J_URI = os.getenv('NEO4J_URI', 'neo4j+s://db5c9cae.databases.neo4j.io')
+    NEO4J_USER = os.getenv('NEO4J_USER', 'neo4j')
+    NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD', 'qDRQaOBpQBHFZB8XjF3pdnudUaI7-a3oIoMye2-CYwE')
+    QUEUE_URL = os.getenv('QUEUE_URL', "https://sqs.us-east-1.amazonaws.com//boletimfocus")
 
-  neo4j = Neo4jGateway(NEO4J_URI,NEO4J_USER, NEO4J_PASSWORD)
-  integration_queue = IntegrationQueueGateway(boto3.client('sqs', region_name='us-east-1'), QUEUE_URL)
+    logger = Logger()
+    neo4j = Neo4jGateway(NEO4J_URI,NEO4J_USER, NEO4J_PASSWORD, logger)
+    integration_queue = IntegrationQueueGateway(boto3.client('sqs', region_name='us-east-1'), QUEUE_URL, logger)
   
-  with neo4j.get_driver() as neo4j_driver:
-    print("Testing connection")
-    neo4j_driver.verify_connectivity()
     
-    create_order_use_case = CreateOrderNodeUseCase(neo4j_driver)
-    create_product_use_case = CreateProductNodeUseCase(neo4j_driver)
-    create_customer_use_case = CreateCustomerNodeUseCase(neo4j_driver)
-  
-    events_controller = EventsController(create_order_use_case, create_product_use_case, create_customer_use_case)
-      
+    create_order_use_case = CreateOrderNodeUseCase(neo4j, logger)
+    create_product_use_case = CreateProductNodeUseCase(neo4j, logger)
+    create_customer_use_case = CreateCustomerNodeUseCase(neo4j, logger)
+
+    events_controller = EventsController(create_order_use_case, create_product_use_case, create_customer_use_case, logger)
+        
     for message in integration_queue.poll_messages():
-      try:
-        events_controller.process_message(message)
-        integration_queue.delete_message(message)
-      except Exception as e:
-        print(f"Error processing message: {e}")
+        try:
+            events_controller.process_message(message)
+            integration_queue.delete_message(message)
+        except Exception as e:
+            logger.log(f"Error processing message: {e}")
 
 if __name__ == "__main__":
     main()
