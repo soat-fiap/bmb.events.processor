@@ -1,12 +1,4 @@
 ##############################
-# EKS CLUSTER
-##############################
-
-data "aws_eks_cluster" "techchallenge_cluster" {
-  name = var.eks_cluster_name
-}
-
-##############################
 # SQS QUEUE
 ##############################
 
@@ -65,6 +57,7 @@ locals {
   image_name            = var.docker_image
   aws_access_key_id     = var.access_key_id
   aws_secret_access_key = var.secret_access_key
+  region                = var.region
   queue_url             = aws_sqs_queue.events_processor.url
   sns_topics = toset([
     "Bmb_Domain_Core_Events_Integration-OrderCreated",
@@ -86,6 +79,7 @@ resource "kubernetes_secret" "bmb_event_processor_neo4j" {
     NEO4J_PASSWORD        = local.neo4j_password
     AWS_ACCESS_KEY_ID     = local.aws_access_key_id
     AWS_SECRET_ACCESS_KEY = local.aws_secret_access_key
+    AWS_REGION            = local.region
   }
 }
 

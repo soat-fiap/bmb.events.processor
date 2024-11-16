@@ -149,7 +149,7 @@ def main():
             events_controller.process_message(json.loads(message.get('Body')))
             integration_queue.delete_message(message)
         except Exception as e:
-            logger.log(f"Error processing message: {e}")
+            logger.error(f"Error processing message: {e}")
 
 if __name__ == "__main__":
     main()

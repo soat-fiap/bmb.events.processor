@@ -19,6 +19,14 @@ provider "aws" {
   }
 }
 
+##############################
+# EKS CLUSTER
+##############################
+
+data "aws_eks_cluster" "techchallenge_cluster" {
+  name = var.eks_cluster_name
+}
+
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.techchallenge_cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.techchallenge_cluster.certificate_authority[0].data)
