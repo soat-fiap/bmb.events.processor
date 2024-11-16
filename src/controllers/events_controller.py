@@ -28,7 +28,7 @@ class EventsController:
             json_data = json.loads(json_string)
             return json_data
         except json.JSONDecodeError as e:
-            self.logger.log(f"Error decoding JSON: {e}"),
+            self.logger.error(f"Error decoding JSON: {e}"),
             return None
 
     def process_message(self, message):
@@ -39,6 +39,6 @@ class EventsController:
 
                 self.__map_usecase(event_type,).execute(message['message'])
         except Exception as e:
-            self.logger.log(f"Error processing message: {e}")
+            self.logger.error(f"Error processing message: {e}")
             raise
         

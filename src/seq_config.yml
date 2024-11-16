@@ -1,0 +1,34 @@
+version: 1
+
+disable_existing_loggers: True
+
+root:
+  level: INFO
+  handlers:
+  - seq
+  - console
+
+loggers:
+  another_logger:
+      propagate: False
+      level: INFO
+      handlers:
+      - seq
+      - console
+
+handlers:
+  console:
+    class: seqlog.structured_logging.ConsoleStructuredLogHandler
+    formatter: seq
+
+  seq:
+    class: seqlog.structured_logging.SeqLogHandler
+    formatter: seq
+
+    server_url: 'http://api-internal.fiap-log.svc.cluster.local:5341'
+
+formatters:
+  seq:
+    style: '{'
+    format: '{asctime} {levelname} {name} {message}'
+    datefmt: '%Y-%m-%d %H:%M:%S'

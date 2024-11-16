@@ -11,9 +11,13 @@ class Neo4jGateway:
 
     def __init__(self, uri, user, password, logger):
         self.logger = logger
-        self.driver = GraphDatabase.driver(uri, auth=(user, password))
-        self.driver.verify_connectivity()
-        self.logger.log("Neo4j driver initialized")
+        try:
+            self.driver = GraphDatabase.driver(uri, auth=(user, password))
+            self.driver.verify_connectivity()
+            self.logger.log("Neo4j driver initialized")
+        except Exception as e:
+            self.logger.error(f"Error initializing Neo4j driver: {e}")
+            raise e
 
     def get_driver(self):
         return self.driver    

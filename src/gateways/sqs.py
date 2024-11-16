@@ -20,7 +20,7 @@ class IntegrationQueueGateway:
             return messages
 
         except Exception as e:
-            self.logger.log(f"Error polling SQS messages from queue {self.queue_url}: {e}")
+            self.logger.error(f"Error polling SQS messages from queue {self.queue_url}: {e}")
 
     def delete_message(self, message):
         message_id = message.get('MessageId', 'Unknown')
@@ -32,4 +32,4 @@ class IntegrationQueueGateway:
             )
             self.logger.log(f"Successfully deleted message with ID: {message_id} from queue: {self.queue_url}")
         except Exception as e:
-            self.logger.log(f"Error deleting message with ID: {message_id} from queue {self.queue_url}: {e}")
+            self.logger.error(f"Error deleting message with ID: {message_id} from queue {self.queue_url}: {e}")
