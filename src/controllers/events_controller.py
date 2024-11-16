@@ -33,11 +33,11 @@ class EventsController:
 
     def process_message(self, message):
         try:
-            if message['MessageAttributes'] is not None:
-                event_type = message['MessageAttributes'].get('EventType').get('StringValue')
+            if message["messageType"] is not None:
+                event_type = message["messageType"][0].split(":")[-1]
                 self.logger.log(f"EventType: {event_type}")
 
-                self.__map_usecase(event_type,).execute(self.__read_json_from_string(message['Body']))
+                self.__map_usecase(event_type,).execute(message['message'])
         except Exception as e:
             self.logger.log(f"Error processing message: {e}")
             raise
