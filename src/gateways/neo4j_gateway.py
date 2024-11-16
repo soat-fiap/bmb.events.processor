@@ -27,17 +27,17 @@ class Neo4jGateway:
 
     def save_product(self, product_data):
         query = (
-            "MERGE (p:Product {id: $product_id, name: $name, category: $category, price: $price}) "
+            "MERGE (p:Product {id: $product_id, name: $name, category: $category}) "
         )
-        self.logger.log(f"Saving product with ID: {product_data['Id']}, Name: {product_data['Name']}")
-        self.__execute(query, product_id=product_data["Id"], name=product_data["Name"], category=category_mapping[product_data["Category"]], price=product_data["Price"])
+        self.logger.log(f"Saving product with ID: {product_data['id']}, Name: {product_data['name']}")
+        self.__execute(query, product_id=product_data["id"], name=product_data["name"], category=product_data["category"])
 
     def save_order(self, order):
         query = (
             "MERGE (o:Order {id: $order_id}) "
         )
-        self.logger.log(f"Saving order with ID: {order['Id']}")
-        self.__execute(query, order_id=order["Id"])
+        self.logger.log(f"Saving order with ID: {order['id']}")
+        self.__execute(query, order_id=order["id"])
 
     def save_customer_order_relationship(self, order):
         query = (
@@ -45,8 +45,8 @@ class Neo4jGateway:
             "MERGE (c:Customer {id: $customer_id}) "
             "MERGE (c)-[:PLACED]->(o)"
         )
-        self.logger.log(f"Creating relationship between customer ID: {order['Customer']['Id']} and order ID: {order['Id']}")
-        self.__execute(query, order_id=order["Id"], customer_id=order["Customer"]["Id"])
+        self.logger.log(f"Creating relationship between customer ID: {order['customer']['id']} and order ID: {order['id']}")
+        self.__execute(query, order_id=order["id"], customer_id=order["customer"]["id"])
 
     def __create_order_item_relationship(self, order_item):
         query = (
@@ -54,12 +54,11 @@ class Neo4jGateway:
             "MERGE (p:Product {id: $product_id}) "
             "MERGE (o)-[:CONTAINS]->(p)"
         )
-        self.logger.log(f"Creating relationship between order ID: {order_item['OrderId']} and product ID: {order_item['ProductId']}")
-        self.__execute(query, order_id=order_item["OrderId"], product_id=order_item["ProductId"])
+        self.logger.log(f"Creating relationship between order ID: {order_item['orderId']} and product ID: {order_item['id']}")
+        self.__execute(query, order_id=order_item["orderId"], product_id=order_item["id"])
 
-    def save_product_order_relationship(self, order_items):
-        for order_item in order_items:
-            self.__create_order_item_relationship(order_item)
+    def save_product_order_relationship(self, order_item):
+        self.__create_order_item_relationship(order_item)
 
     def __run_transaction(self, tx, query, **data):
         self.logger.log(f"Executing transaction with query: {query} and data: {data}")
