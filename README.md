@@ -36,7 +36,7 @@ Using a graph database like Neo4j to store events like `CustomerRegistered` and 
 
 ## This repo on the infrastructure
 
-![Architecture Diagram](aws-infra-phase-3.png)
+![Architecture Diagram](aws-infra-phase-4.png)
 
 
 
