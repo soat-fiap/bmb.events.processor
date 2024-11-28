@@ -1,9 +1,9 @@
 import inspect
 import logging
 import os
-import seqlog
+#import seqlog
 
-seqlog.configure_from_file('seq_config.yml')
+#seqlog.configure_from_file('seq_config.yml')
 class Logger:
     
     def __init__(self):
